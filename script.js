@@ -24,7 +24,7 @@ function initMap() {
         map,
         title: "Start Digging",
         icon: {
-          url: "https://em-content.zobj.net/thumbs/240/apple/354/shovel_26cf.png",
+          url: "https://cdn-icons-png.flaticon.com/512/808/808404.png",
           scaledSize: new google.maps.Size(40, 40)
         }
       });
