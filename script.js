@@ -23,10 +23,7 @@ function initMap() {
         position: clickedLocation,
         map,
         title: "Start Digging",
-        icon: {
-          url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-          scaledSize: new google.maps.Size(40, 40)
-        }
+        icon: "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
       });
       
 
@@ -68,12 +65,14 @@ confirmBtn.addEventListener("click", () => {
 
 function getLocationInfo(lat, lng) {
   geocoder.geocode({ location: { lat, lng } }, (results, statusCode) => {
-    if (statusCode === "OK") {
-      const place = results[0]?.formatted_address || "Unknown location";
-      getWeather(lat, lng, place);
-    } else {
-      result.innerHTML = "<p>Couldn't find the location name.</p>";
-    }
+    if (statusCode === "OK" && results.length > 0) {
+        const place = results[0].formatted_address;
+        getWeather(lat, lng, place);
+      } else {
+        const fallback = "Open ocean or remote area";
+        getWeather(lat, lng, fallback);
+      }
+      
   });
 }
 
