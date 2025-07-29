@@ -68,23 +68,27 @@ confirmBtn.addEventListener("click", () => {
 });
 
 function getLocationInfo(lat, lng) {
-  geocoder.geocode({ location: { lat, lng } }, (results, statusCode) => {
-    if (statusCode === "OK" && results.length > 0) {
+    geocoder.geocode({ location: { lat, lng } }, (results, statusCode) => {
+      if (statusCode === "OK" && results.length > 0) {
         const place = results[0].formatted_address;
         getWeather(lat, lng, place);
       } else {
-        getWeather(lat, lng, fallback);
+        getWeather(lat, lng, null);
       }
-      
-  });
-}
+    });
+  }
+  
 
-function getWeather(lat, lng, placeName) {
+  function getWeather(lat, lng, placeName) {
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&appid=${weatherKey}`;
   
     fetch(url)
       .then(res => res.json())
       .then(data => {
+        if (data.cod !== 200 || !data.main || !data.weather) {
+          throw new Error("Invalid weather data");
+        }
+  
         const temp = Math.round(data.main.temp);
         const weather = data.weather[0].description;
   
@@ -103,9 +107,15 @@ function getWeather(lat, lng, placeName) {
         `;
         status.textContent = "You made it!";
       })
-      .catch(() => {
-        result.innerHTML = "<p>Weather info unavailable.</p>";
+      .catch((err) => {
+        console.error("Weather error:", err);
+        result.innerHTML = `
+          <p>You reached: <strong>Lat: ${lat.toFixed(5)}, Lng: ${lng.toFixed(5)}</strong></p>
+          <p>Weather info unavailable.</p>
+        `;
+        status.textContent = "You made it!";
       });
   }
+  
   
   
