@@ -1,7 +1,7 @@
 let map;
 let clickedLocation = null;
 let geocoder;
-
+let allMarkers = [];
 const weatherKey = "4bc0396732568dd45097d32338ec0411";
 
 const confirmBtn = document.getElementById("confirmBtn");
@@ -19,7 +19,7 @@ function initMap() {
   map.addListener("click", (event) => {
     clickedLocation = event.latLng;
 
-    new google.maps.Marker({
+    const startMarker = new google.maps.Marker({
         position: clickedLocation,
         map,
         title: "Start Digging",
@@ -28,14 +28,28 @@ function initMap() {
           scaledSize: new google.maps.Size(32, 32)
         }
       });
-      
+      allMarkers.push(startMarker);
       
 
     confirmBtn.disabled = false;
-    status.textContent = "";
+    // status.textContent = "";
     result.innerHTML = "";
   });
 }
+
+//reset button logic
+document.getElementById("resetBtn").addEventListener("click", () => {
+    // Remove all markers from the map
+    allMarkers.forEach(marker => marker.setMap(null));
+    allMarkers = [];
+  
+    // Reset interface
+    clickedLocation = null;
+    confirmBtn.disabled = true;
+    status.textContent = "";
+    result.innerHTML = "";
+  });
+  
 
 confirmBtn.addEventListener("click", () => {
   if (!clickedLocation) return;
@@ -52,15 +66,16 @@ confirmBtn.addEventListener("click", () => {
 
     const dest = { lat, lng };
 
-    new google.maps.Marker({
+    const rockMarker = new google.maps.Marker({
         position: dest,
         map,
         title: "You dug here!",
         icon: {
-          url: "https://em-content.zobj.net/thumbs/240/apple/354/rock_1faa8.png",
+          url: "images/dirt.png",
           scaledSize: new google.maps.Size(40, 40)
         }
       });
+      allMarkers.push(rockMarker);
       
 
     getLocationInfo(lat, lng);
