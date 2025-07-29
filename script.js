@@ -23,8 +23,12 @@ function initMap() {
         position: clickedLocation,
         map,
         title: "Start Digging",
-        icon: "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
+        icon: {
+          url: "images/shovel.png",
+          scaledSize: new google.maps.Size(32, 32)
+        }
       });
+      
       
 
     confirmBtn.disabled = false;
