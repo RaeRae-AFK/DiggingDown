@@ -73,7 +73,6 @@ function getLocationInfo(lat, lng) {
         const place = results[0].formatted_address;
         getWeather(lat, lng, place);
       } else {
-        const fallback = "Open ocean or remote area";
         getWeather(lat, lng, fallback);
       }
       
@@ -108,4 +107,5 @@ function getWeather(lat, lng, placeName) {
         result.innerHTML = "<p>Weather info unavailable.</p>";
       });
   }
+  
   
