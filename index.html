@@ -5,7 +5,6 @@
   <title>Digging Down Simulator</title>
   <link rel="stylesheet" href="style.css">
   <script src="script.js?v=2" defer></script>
-
 </head>
 <body>
   <header>
@@ -19,7 +18,6 @@
       <button id="confirmBtn" disabled>Start Digging</button>
       <p id="status"></p>
       <div id="result"></div>
-
     </div>
     <div id="map"></div>
   </div>
@@ -27,62 +25,6 @@
   <footer>
     Made by You — Powered by Google Maps
   </footer>
-
-  <script>
-    let map;
-    let selectedLatLng = null;
-    let startMarker = null;
-
-    function initMap() {
-      map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: 0, lng: 0 },
-        zoom: 2,
-      });
-
-      map.addListener("click", (e) => {
-        selectedLatLng = e.latLng;
-
-        if (startMarker) {
-          startMarker.setMap(null);
-        }
-
-        startMarker = new google.maps.Marker({
-          position: selectedLatLng,
-          map,
-          title: "Starting Point",
-          icon: "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
-        });
-
-        document.getElementById("confirmBtn").disabled = false;
-        document.getElementById("status").textContent = "";
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("confirmBtn").addEventListener("click", () => {
-        if (!selectedLatLng) return;
-
-        document.getElementById("status").textContent = "Digging...";
-
-        setTimeout(() => {
-          const antipodeLat = -selectedLatLng.lat();
-          const antipodeLng = selectedLatLng.lng() > 0
-            ? selectedLatLng.lng() - 180
-            : selectedLatLng.lng() + 180;
-
-          new google.maps.Marker({
-            position: { lat: antipodeLat, lng: antipodeLng },
-            map,
-            title: "You dug to here!",
-            icon: "https://maps.google.com/mapfiles/kml/shapes/target.png"
-          });
-
-          document.getElementById("status").textContent = "You’ve reached the other side!";
-          document.getElementById("confirmBtn").disabled = true;
-        }, 3000); // 3-second delay
-      });
-    });
-  </script>
 
   <script async
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvurhdpSVUgwFlntLmj6F7brmcMv8iQ0I&callback=initMap">
