@@ -24,7 +24,7 @@ function initMap() {
         map,
         title: "Start Digging",
         icon: {
-          url: "https://cdn-icons-png.flaticon.com/512/808/808404.png",
+          url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
           scaledSize: new google.maps.Size(40, 40)
         }
       });
