@@ -1,20 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Digging Down Simulator</title>
-  <style>
-    #map { height: 100vh; width: 100%; }
-    body { margin: 0; }
-  </style>
-    <meta charset="UTF-8">
-    <title>Digging Down Simulator</title>
-    <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="map"></div>
+  <header>
+    <h1>Digging Down Simulator</h1>
+  </header>
+
+  <div class="container">
+    <div class="sidebar">
+      <p>Click on a location to mark where you want to dig.</p>
+      <p>Then click “Start Digging” to begin.</p>
+      <button id="confirmBtn" disabled>Start Digging</button>
+      <p id="status"></p>
+    </div>
+    <div id="map"></div>
+  </div>
+
+  <footer>
+    Made by You — Powered by Google Maps
+  </footer>
 
   <script>
     let map;
+    let selectedLatLng = null;
+    let startMarker = null;
 
     function initMap() {
       map = new google.maps.Map(document.getElementById("map"), {
@@ -23,25 +36,48 @@
       });
 
       map.addListener("click", (e) => {
-        const lat = e.latLng.lat();
-        const lng = e.latLng.lng();
+        selectedLatLng = e.latLng;
 
-        addMarker(lat, lng, "Start Point");
+        if (startMarker) {
+          startMarker.setMap(null);
+        }
 
-        const antipodeLat = -lat;
-        const antipodeLng = lng > 0 ? lng - 180 : lng + 180;
+        startMarker = new google.maps.Marker({
+          position: selectedLatLng,
+          map,
+          title: "Starting Point",
+          icon: "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
+        });
 
-        addMarker(antipodeLat, antipodeLng, "Antipode");
+        document.getElementById("confirmBtn").disabled = false;
+        document.getElementById("status").textContent = "";
       });
     }
 
-    function addMarker(lat, lng, title) {
-      new google.maps.Marker({
-        position: { lat, lng },
-        map,
-        title,
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("confirmBtn").addEventListener("click", () => {
+        if (!selectedLatLng) return;
+
+        document.getElementById("status").textContent = "Digging...";
+
+        setTimeout(() => {
+          const antipodeLat = -selectedLatLng.lat();
+          const antipodeLng = selectedLatLng.lng() > 0
+            ? selectedLatLng.lng() - 180
+            : selectedLatLng.lng() + 180;
+
+          new google.maps.Marker({
+            position: { lat: antipodeLat, lng: antipodeLng },
+            map,
+            title: "You dug to here!",
+            icon: "https://maps.google.com/mapfiles/kml/shapes/target.png"
+          });
+
+          document.getElementById("status").textContent = "You’ve reached the other side!";
+          document.getElementById("confirmBtn").disabled = true;
+        }, 3000); // 3-second delay
       });
-    }
+    });
   </script>
 
   <script async
